@@ -1,0 +1,50 @@
+Source: gz-sensors
+Section: libs
+Priority: optional
+Maintainer: Giovanni Senatore <giovanni.senatore@gmail.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ gz-cmake,
+ libprotobuf-dev,
+ libgz-math-dev,
+ libgz-utils-dev,
+ gz-tools,
+ libgz-common-dev,
+ libgz-transport-dev,
+ ruby-gz-transport,
+ libgz-rendering-dev,
+ libgz-msgs-dev,
+ ruby-gz-msgs,
+ libsdformat-dev,
+ ruby-sdformat,
+Standards-Version: 4.6.2
+Homepage: https://gazebosim.org/
+#Vcs-Browser: https://salsa.debian.org/debian/gz-sensors
+#Vcs-Git: https://salsa.debian.org/debian/gz-sensors.git
+
+Package: libgz-sensors-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends:
+ libgz-sensors9 (= ${binary:Version}),
+ ${misc:Depends},
+Description: Provides numerous sensor models designed to generate realistic data from simulation environments - development files
+ Gazebo Sensors, a component of Gazebo, provides numerous sensor models designed
+ to generate realistic data from simulation environments. Gazebo Sensors is used
+ in conjunction with Gazebo Libraries, and especially relies on the rendering
+ capabilities from Gazebo Rendering and physics simulation from Gazebo Physics.
+
+Package: libgz-sensors9
+Architecture: any
+Multi-Arch: same
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: Provides numerous sensor models designed to generate realistic data from simulation environments
+ Gazebo Sensors, a component of Gazebo, provides numerous sensor models designed
+ to generate realistic data from simulation environments. Gazebo Sensors is used
+ in conjunction with Gazebo Libraries, and especially relies on the rendering
+ capabilities from Gazebo Rendering and physics simulation from Gazebo Physics.
