@@ -29,7 +29,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends:
- libgz-sensors9 (= ${binary:Version}),
+ libgz-sensors10 (= ${binary:Version}),
  ${misc:Depends},
 Description: Provides numerous sensor models designed to generate realistic data from simulation environments - development files
  Gazebo Sensors, a component of Gazebo, provides numerous sensor models designed
@@ -37,7 +37,7 @@ Description: Provides numerous sensor models designed to generate realistic data
  in conjunction with Gazebo Libraries, and especially relies on the rendering
  capabilities from Gazebo Rendering and physics simulation from Gazebo Physics.
 
-Package: libgz-sensors9
+Package: libgz-sensors10
 Architecture: any
 Multi-Arch: same
 Depends:

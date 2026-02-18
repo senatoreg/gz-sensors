@@ -1,5 +1,5 @@
-gz-sensors (9.2.0-1) UNRELEASED; urgency=medium
+gz-sensors (10.0.1-1) UNRELEASED; urgency=medium
 
   * Initial release.
 
- -- Giovanni Senatore <giovanni.senatore@gmail.com>  Sun, 29 Jun 2025 07:25:39 +0200
+ -- Giovanni Senatore <giovanni.senatore@gmail.com>  Wed, 18 Feb 2026 09:17:16 +0100
