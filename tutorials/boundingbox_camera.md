@@ -216,7 +216,7 @@ You will see output like this:
 To visualize the output from different SDF file, you can include the model of the sensor in any SDF file then run it via gz sim and open the `Image Display` plugin and select the topic you specified in the `<topic>` tag.
 
 
-Taking a look at the [SDF](https://github.com/gazebosim/gz-sim/blob/main/examples/worlds/boundingbox_camera.sdf) file for this example.
+Taking a look at the [SDF](https://github.com/gazebosim/gz-sim/blob/gz-sensors10/examples/worlds/boundingbox_camera.sdf) file for this example.
 
 
 ## Object Detection Dataset Generation
@@ -369,15 +369,15 @@ def euler_to_rotation(theta) :
 """
 This matrix are specific for the camera configuration in the SDF world
 
-    <horizontal_fov>1.57</horizontal_fov>
+    <horizontal_fov>1.047</horizontal_fov>
     <width>800</width>
     <height>600</height>
 
 If any of them is changed, you have to change the projection matrix
 """
 projMatrix = np.array([
-    [0.99975, 0, 0, 0],
-    [0, 1.333, 0, 0 ],
+    [1.732, 0, 0, 0],
+    [0, 2.309, 0, 0 ],
     [0, 0, -1.00002, -0.02],
     [0, 0, -1, 0]
 ])

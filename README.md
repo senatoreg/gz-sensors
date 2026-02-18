@@ -12,7 +12,7 @@ Build | Status
 Test coverage | [![codecov](https://codecov.io/gh/gazebosim/gz-sensors/tree/gz-sensors9/graph/badge.svg)](https://codecov.io/gh/gazebosim/gz-sensors/tree/gz-sensors9)
 Ubuntu Noble | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_sensors-ci-gz-sensors9-noble-amd64)](https://build.osrfoundation.org/job/gz_sensors-ci-gz-sensors9-noble-amd64)
 Homebrew      | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_sensors-ci-gz-sensors9-homebrew-amd64)](https://build.osrfoundation.org/job/gz_sensors-ci-gz-sensors9-homebrew-amd64)
-Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_sensors-9-clowin)](https://build.osrfoundation.org/job/gz_sensors-9-clowin/)
+Windows       | [![Build Status](https://build.osrfoundation.org/buildStatus/icon?job=gz_sensors-9-cnlwin)](https://build.osrfoundation.org/job/gz_sensors-9-cnlwin/)
 
 Gazebo Sensors, a component of [Gazebo](https://gazebosim.org),
 provides numerous sensor models
@@ -48,7 +48,7 @@ models into sensor streams.
 | **Sensor Name**           | **API Link**                                                                                                 | **SDF Element**                                                                                      | **Notes**                                          |
 |---------------------------|-------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|----------------------------------------------------|
 | **Air Pressure Sensor**   | [AirPressureSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1AirPressureSensor.html)        | [`<air_pressure>`](http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_air_pressure)                | Measures atmospheric pressure                      |
-| **Air Speed Sensor**      | [AirSpeedSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1AirSpeedSensor.html)              | N/A                                                                                    | Measures the speed of air relative to the sensor    |
+| **Air Speed Sensor**      | [AirSpeedSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1AirSpeedSensor.html)              | [`<air_speed>`](http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_air_speed)                                                                                  | Measures the speed of air relative to the sensor    |
 | **Altimeter**             | [AltimeterSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1AltimeterSensor.html)            | [`<altimeter>`](http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_altimeter)                      | Measures altitude above a reference point          |
 | **Bounding Box Camera**   | [BoundingBoxCameraSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1BoundingBoxCameraSensor.html) | [`<camera>`](http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_camera)                         | Captures images with bounding box annotations      |
 | **Camera**                | [CameraSensor](https://gazebosim.org/api/sensors/9/classgz_1_1sensors_1_1CameraSensor.html)                  | [`<camera>`](http://sdformat.org/spec?ver=1.12&elem=sensor#sensor_camera)                           | Captures standard RGB images                       |
@@ -67,11 +67,11 @@ models into sensor streams.
 
 # Install
 
-See the [installation tutorial](https://gazebosim.org/api/sensors/9/installation.html).
+See the [installation tutorial](https://gazebosim.org/api/sensors/10/installation.html).
 
 # Usage
 
-Please refer to the [examples directory](https://github.com/gazebosim/gz-sensors/tree/main/examples).
+Please refer to the [examples directory](https://github.com/gazebosim/gz-sensors/tree/gz-sensors10/examples).
 
 A list of sensors and SDF examples can be found in the [SDF specification](http://sdformat.org/spec?ver=1.12&elem=sensor)
 

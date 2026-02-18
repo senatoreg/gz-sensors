@@ -25,6 +25,7 @@
 #include <gz/rendering/Camera.hh>
 #include <gz/rendering/DepthCamera.hh>
 
+#include <gz/msgs/PointCloudPackedUtils.hh>
 #include <gz/msgs/Utility.hh>
 #include <gz/rendering/Utils.hh>
 #include <gz/transport/Node.hh>
@@ -104,9 +105,6 @@ class gz::sensors::RgbdCameraSensorPrivate
   /// \brief The number of channels (x, y, z, rgba, ...) in the
   /// point cloud.
   public: unsigned int channels = 4;
-
-  /// \brief Frame ID the camera_info message header is expressed.
-  public: std::string opticalFrameId{""};
 
   /// \brief Pointer to an image to be published
   public: gz::rendering::Image image;
@@ -295,24 +293,6 @@ bool RgbdCameraSensor::CreateCameras()
   this->dataPtr->depthCamera->SetNearClipPlane(cameraSdf->NearClip());
   this->dataPtr->depthCamera->SetFarClipPlane(cameraSdf->FarClip());
 
-  // Note: while Gazebo interprets the camera frame to be looking towards +X,
-  // other tools, such as ROS, may interpret this frame as looking towards +Z.
-  // To make this configurable the user has the option to set an optical frame.
-  // If the user has set <optical_frame_id> in the cameraSdf use it,
-  // otherwise fall back to the sensor frame.
-  // \todo(iche033 sdf::Camera::OpticalFrameId is deprecated.
-  // Remove this if statement when gz-sensors is updated to use sdformat16
-  GZ_UTILS_WARN_IGNORE__DEPRECATED_DECLARATION
-  if (cameraSdf->OpticalFrameId().empty())
-  {
-   this->dataPtr->opticalFrameId = this->FrameId();
-  }
-  else
-  {
-   this->dataPtr->opticalFrameId = cameraSdf->OpticalFrameId();
-  }
-  GZ_UTILS_WARN_RESUME__DEPRECATED_DECLARATION
-
   // Depth camera clip params are new and only override the camera clip
   // params if specified.
   if (cameraSdf->HasDepthCamera())
@@ -431,6 +411,7 @@ void RgbdCameraSensorPrivate::OnNewDepthFrame(const float *_scan,
                     unsigned int /*_channels*/,
                     const std::string &/*_format*/)
 {
+  GZ_PROFILE("RgbdCameraSensorPrivate::OnNewDepthFrame");
   std::lock_guard<std::mutex> lock(this->mutex);
 
   unsigned int depthSamples = _width * _height;
@@ -448,6 +429,7 @@ void RgbdCameraSensorPrivate::OnNewRgbPointCloud(const float *_scan,
                     unsigned int _channels,
                     const std::string &/*_format*/)
 {
+  GZ_PROFILE("RgbdCameraSensorPrivate::OnNewRgbPointCloud");
   std::lock_guard<std::mutex> lock(this->mutex);
 
   unsigned int pointCloudSamples = _width * _height;
@@ -513,7 +495,7 @@ bool RgbdCameraSensor::Update(const std::chrono::steady_clock::duration &_now)
   // generate sensor data
   this->Render();
 
-  // create and publish the depthmessage
+  // create and publish the depth message
   if (this->HasDepthConnections())
   {
     msgs::Image msg;
@@ -525,7 +507,7 @@ bool RgbdCameraSensor::Update(const std::chrono::steady_clock::duration &_now)
     *msg.mutable_header()->mutable_stamp() = msgs::Convert(_now);
     auto frame = msg.mutable_header()->add_data();
     frame->set_key("frame_id");
-    frame->add_value(this->dataPtr->opticalFrameId);
+    frame->add_value(this->FrameId());
 
     std::lock_guard<std::mutex> lock(this->dataPtr->mutex);
 
@@ -577,7 +559,6 @@ bool RgbdCameraSensor::Update(const std::chrono::steady_clock::duration &_now)
       // Set the time stamp
       *this->dataPtr->pointMsg.mutable_header()->mutable_stamp() =
         msgs::Convert(_now);
-      this->dataPtr->pointMsg.set_is_dense(true);
 
       if ((this->dataPtr->hasDepthNearClip || this->dataPtr->hasDepthFarClip)
           && this->dataPtr->depthBuffer)
@@ -637,7 +618,7 @@ bool RgbdCameraSensor::Update(const std::chrono::steady_clock::duration &_now)
       *msg.mutable_header()->mutable_stamp() = msgs::Convert(_now);
       auto frame = msg.mutable_header()->add_data();
       frame->set_key("frame_id");
-      frame->add_value(this->dataPtr->opticalFrameId);
+      frame->add_value(this->FrameId());
       msg.set_data(data, rendering::PixelUtil::MemorySize(rendering::PF_R8G8B8,
         width, height));
 

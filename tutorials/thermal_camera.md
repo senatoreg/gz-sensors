@@ -116,13 +116,20 @@ As we can see, we define a sensor with the following SDF elements:
 
 There's also an optional plugin used here that allows for further configuration of the thermal camera.
 Here's a description of the elements in this plugin (if the plugin isn't used, the default values mentioned below are used):
-* `<min_temp>`: The thermal camera's minimum temperature, in Kelvin.
-                The default minimum temperature is `0`.
-* `<max_temp>`: The thermal camera's maximum temperature, in Kelvin.
-                The default maximum temperature is calculated as `(2^(bitDepth) - 1) * resolution`.
-                For a 8-bit thermal camera with a linear resolution of `3.0`, the maximum temperature is `((2^8) - 1) * 3 = 765 Kelvin`.
 * `<resolution>`: The thermal camera's linear resolution.
+                  This defines the mapping of temperatures onto image values.
+                  A temperature of `x` Kelvin corresponds to an image value of `x * resolution`.
+                  Note that this implies an implicit minimum temperature of `0` Kelvin and an implicit maximum temperature of `(2^bitDepth - 1) * resolution` Kelvin due to the limited range of image values.
+                  For example, for an 8-bit thermal camera with a linear resolution of `3.0`, the implicit maximum temperature is `((2^8) - 1) * 3 = 765 Kelvin`.
                   The default linear resolution is `0.01` for a 16-bit thermal camera, and `3.0` for a 8-bit thermal camera.
+* `<min_temp>`: The thermal camera's additional minimum temperature, in Kelvin.
+                By default, there is no additional lower bound.
+* `<max_temp>`: The thermal camera's additional maximum temperature, in Kelvin.
+                By default, there is no additional upper bound.
+
+Note that the elements `<min_temp>` and `<max_temp>` do not influence the mapping between image values and temperatures.
+Instead, they are only used for clamping down the camera output:
+Any temperature lower than `<min_temp>` will be output by the camera as if it was *exactly equal* to `<min_temp>` (and symmetrically for `<max_temp>`).
 
 ## Assigning a temperature to a model
 
@@ -355,12 +362,12 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(image-listener)
 
 # Find the Gazebo Libraries used directly by the example
-find_package(gz-msgs11 REQUIRED)
-find_package(gz-transport14 REQUIRED)
+find_package(gz-msgs REQUIRED)
+find_package(gz-transport REQUIRED)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC gz-msgs11 gz-transport14)
-target_include_directories(${PROJECT_NAME} PUBLIC ${gz_msgs11_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PUBLIC gz-msgs gz-transport)
+target_include_directories(${PROJECT_NAME} PUBLIC ${gz_msgs12_INCLUDE_DIRS})
 ```
 
 Although most of the code above is described in the comments, let's go over the key points again:

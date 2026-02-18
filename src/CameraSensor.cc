@@ -15,7 +15,6 @@
  *
 */
 
-#include <gz/msgs/boolean.pb.h>
 #include <gz/msgs/camera_info.pb.h>
 #include <gz/msgs/image.pb.h>
 
@@ -117,9 +116,6 @@ class gz::sensors::CameraSensorPrivate
 
   /// \brief Camera information message.
   public: msgs::CameraInfo infoMsg;
-
-  /// \brief The frame this camera uses in its camera_info topic.
-  public: std::string opticalFrameId{""};
 
   /// \brief Topic for info message.
   public: std::string infoTopic{""};
@@ -428,8 +424,8 @@ bool CameraSensor::Update(const std::chrono::steady_clock::duration &_now)
   {
     if (this->dataPtr->generatingData)
     {
-      gzdbg << "Disabling camera sensor: '" << this->Name() << "' data "
-             << "generation. " << std::endl;;
+      gzdbg << "Disabling camera sensor: '" << this->Name()
+            << "' data generation. " << std::endl;
       this->dataPtr->generatingData = false;
     }
 
@@ -439,8 +435,8 @@ bool CameraSensor::Update(const std::chrono::steady_clock::duration &_now)
   {
     if (!this->dataPtr->generatingData)
     {
-      gzdbg << "Enabling camera sensor: '" << this->Name() << "' data "
-             << "generation." << std::endl;;
+      gzdbg << "Enabling camera sensor: '" << this->Name()
+            << "' data generation." << std::endl;
       this->dataPtr->generatingData = true;
     }
   }
@@ -511,7 +507,7 @@ bool CameraSensor::Update(const std::chrono::steady_clock::duration &_now)
       *msg.mutable_header()->mutable_stamp() = msgs::Convert(_now);
       auto frame = msg.mutable_header()->add_data();
       frame->set_key("frame_id");
-      frame->add_value(this->dataPtr->opticalFrameId);
+      frame->add_value(this->FrameId());
       msg.set_data(data, this->dataPtr->camera->ImageMemorySize());
     }
 
@@ -592,7 +588,7 @@ rendering::CameraPtr CameraSensor::RenderingCamera() const
 }
 
 //////////////////////////////////////////////////
-std::string CameraSensor::InfoTopic() const
+const std::string& CameraSensor::InfoTopic() const
 {
   return this->dataPtr->infoTopic;
 }
@@ -708,27 +704,9 @@ void CameraSensor::PopulateInfo(const sdf::Camera *_cameraSdf)
   this->dataPtr->infoMsg.add_rectification_matrix(0.0);
   this->dataPtr->infoMsg.add_rectification_matrix(1.0);
 
-  // Note: while Gazebo interprets the camera frame to be looking towards +X,
-  // other tools, such as ROS, may interpret this frame as looking towards +Z.
-  // To make this configurable the user has the option to set an optical frame.
-  // If the user has set <optical_frame_id> in the cameraSdf use it,
-  // otherwise fall back to the sensor frame.
-  // \todo(iche033 sdf::Camera::OpticalFrameId is deprecated.
-  // Remove this if statement when gz-sensors is updated to use sdformat16
-  GZ_UTILS_WARN_IGNORE__DEPRECATED_DECLARATION
-  if (_cameraSdf->OpticalFrameId().empty())
-  {
-   this->dataPtr->opticalFrameId = this->FrameId();
-  }
-  else
-  {
-   this->dataPtr->opticalFrameId = _cameraSdf->OpticalFrameId();
-  }
-  GZ_UTILS_WARN_RESUME__DEPRECATED_DECLARATION
-
   auto infoFrame = this->dataPtr->infoMsg.mutable_header()->add_data();
   infoFrame->set_key("frame_id");
-  infoFrame->add_value(this->dataPtr->opticalFrameId);
+  infoFrame->add_value(this->FrameId());
 
   this->dataPtr->infoMsg.set_width(width);
   this->dataPtr->infoMsg.set_height(height);
@@ -776,7 +754,7 @@ bool CameraSensor::HasInfoConnections() const
 //////////////////////////////////////////////////
 const std::string& CameraSensor::OpticalFrameId() const
 {
-  return this->dataPtr->opticalFrameId;
+  return this->FrameId();
 }
 
 //////////////////////////////////////////////////

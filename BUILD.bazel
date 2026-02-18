@@ -1,3 +1,4 @@
+load("@buildifier_prebuilt//:rules.bzl", "buildifier", "buildifier_test")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_gazebo//gazebo:headers.bzl", "gz_configure_header", "gz_export_header", "gz_include_header")
@@ -92,7 +93,6 @@ cc_library(
         "@gz-math",
         "@gz-msgs",
         "@gz-msgs//:gzmsgs_cc_proto",
-        "@gz-rendering",
         "@gz-transport",
         "@gz-utils//:ImplPtr",
         "@gz-utils//:SuppressWarning",
@@ -243,8 +243,8 @@ gz_sensor_library(
     name = "depth_camera",
     srcs = ["src/DepthCameraSensor.cc"],
     hdrs = ["include/gz/sensors/DepthCameraSensor.hh"],
-    copts = [
-        "-Wno-private-header",  # Needs private headers from :gz-sensors and :camera
+    features = [
+        "-layering_check",  # Needs private headers from :gz-sensors and :camera
     ],
     includes = ["include"],
     visibility = ["//visibility:public"],
@@ -299,7 +299,6 @@ gz_sensor_library(
         "@gz-math",
         "@gz-msgs",
         "@gz-msgs//:gzmsgs_cc_proto",
-        "@gz-rendering",
         "@gz-transport",
         "@gz-utils//:SuppressWarning",
         "@sdformat",
@@ -484,8 +483,8 @@ gz_sensor_library(
         "src/RgbdCameraSensor.cc",
     ],
     hdrs = ["include/gz/sensors/RgbdCameraSensor.hh"],
-    copts = [
-        "-Wno-private-header",  # Needs private headers from :gz-sensors and :camera
+    features = [
+        "-layering_check",  # Needs private headers from :gz-sensors and :camera
     ],
     includes = ["include"],
     visibility = ["//visibility:public"],
@@ -612,4 +611,20 @@ cc_library(
         ":thermal_camera",
         ":wide_angle_camera",
     ],
+)
+
+buildifier(
+    name = "buildifier.fix",
+    exclude_patterns = ["./.git/*"],
+    lint_mode = "fix",
+    mode = "fix",
+)
+
+buildifier_test(
+    name = "buildifier.test",
+    exclude_patterns = ["./.git/*"],
+    lint_mode = "warn",
+    mode = "diff",
+    no_sandbox = True,
+    workspace = "//:MODULE.bazel",
 )
